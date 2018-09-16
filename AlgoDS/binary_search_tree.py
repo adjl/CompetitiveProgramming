@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import copy
 import unittest
 
 
@@ -53,8 +54,12 @@ class BinarySearchTree:
             return None
         parent = node_to_delete.parent
         if node_to_delete.left and node_to_delete.right:
-            pass
-        elif node_to_delete.left:
+            min_right = self._min(node_to_delete.right)
+            self.delete(min_right.data)
+            orig_node = copy.copy(node_to_delete)
+            node_to_delete.data = min_right.data
+            return orig_node
+        if node_to_delete.left:
             parent.left = node_to_delete.left
         elif node_to_delete.right:
             parent.right = node_to_delete.right
@@ -107,9 +112,9 @@ class BinarySearchTree:
 class BinarySearchTreeTest(unittest.TestCase):
 
     def setUp(self):
-        two = Node(2, Node(1))
+        two = Node(2, Node(1), Node(3))
         four = Node(4, two, Node(5))
-        eight = Node(8, right=Node(9))
+        eight = Node(8, Node(7), Node(9))
         self.tree = BinarySearchTree(Node(6, four, eight))
 
     def test_InitTree(self):
@@ -117,36 +122,50 @@ class BinarySearchTreeTest(unittest.TestCase):
             if not current_node.parent:
                 return None
             return current_node.parent.data
-        self.assertEqual(self.tree.traverse(get_data), '2 4 6 4 None 6 8')
+        self.assertEqual(self.tree.traverse(get_data), '2 4 2 6 4 None 8 6 8')
 
     def testInsert_LeftChild(self):
-        self.tree.insert(Node(3))
-        self.assertEqual(self.tree.traverse(), '1 2 3 4 5 6 8 9')
+        two = Node(2, Node(1), Node(3))
+        four = Node(4, two, Node(5))
+        eight = Node(8, right=Node(9))
+        self.tree = BinarySearchTree(Node(6, four, eight))
+        self.tree.insert(Node(7))
+        self.assertEqual(self.tree.traverse(), '1 2 3 4 5 6 7 8 9')
 
     def testInsert_RightChild(self):
-        self.tree.insert(Node(7))
-        self.assertEqual(self.tree.traverse(), '1 2 4 5 6 7 8 9')
+        two = Node(2, Node(1))
+        four = Node(4, two, Node(5))
+        eight = Node(8, Node(7), Node(9))
+        self.tree = BinarySearchTree(Node(6, four, eight))
+        self.tree.insert(Node(3))
+        self.assertEqual(self.tree.traverse(), '1 2 3 4 5 6 7 8 9')
 
     def testLookup_None(self):
-        self.assertIsNone(self.tree.lookup(3))
+        self.assertIsNone(self.tree.lookup(0))
 
     def testLookup_WithData(self):
         self.assertIsNotNone(self.tree.lookup(5))
 
     def testDelete_None(self):
-        self.assertIsNone(self.tree.delete(3))
+        self.assertIsNone(self.tree.delete(0))
 
     def testDelete_NoChildren(self):
-        self.assertIsNotNone(self.tree.delete(9))
-        self.assertEqual(self.tree.traverse(), '1 2 4 5 6 8')
+        self.assertIsNotNone(self.tree.delete(3))
+        self.assertEqual(self.tree.traverse(), '1 2 4 5 6 7 8 9')
 
     def testDelete_LeftChild(self):
-        self.assertIsNotNone(self.tree.delete(2))
-        self.assertEqual(self.tree.traverse(), '1 4 5 6 8 9')
+        self.assertIsNotNone(self.tree.delete(7))
+        self.assertEqual(self.tree.traverse(), '1 2 3 4 5 6 8 9')
 
     def testDelete_RightChild(self):
-        self.assertIsNotNone(self.tree.delete(8))
-        self.assertEqual(self.tree.traverse(), '1 2 4 5 6 9')
+        self.assertIsNotNone(self.tree.delete(9))
+        self.assertEqual(self.tree.traverse(), '1 2 3 4 5 6 7 8')
+
+    def testDelete_TwoChildren(self):
+        deleted_node = self.tree.delete(6)
+        self.assertIsNotNone(deleted_node)
+        self.assertEqual(deleted_node.data, 6)
+        self.assertEqual(self.tree.traverse(), '1 2 3 4 5 7 8 9')
 
     def testMax_None(self):
         self.tree = BinarySearchTree()
@@ -173,6 +192,11 @@ class BinarySearchTreeTest(unittest.TestCase):
 # This means fewer cases to think about"
 
 # Try creating a balance BST from a sorted list
+
+# Questions:
+# 1) _init() has complexity of O(log n). Is it advisable?
+# 2) Or set parent pointers/rank/etc. on the fly upon insertions, deletions,
+#       node shuffling?
 
 
 if __name__ == '__main__':
