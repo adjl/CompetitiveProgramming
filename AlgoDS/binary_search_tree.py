@@ -46,6 +46,12 @@ class BinarySearchTree:
             else:
                 parent.right = None
             return node_to_delete
+        elif node_to_delete.left:
+            parent.left = node_to_delete.left
+            return node_to_delete
+        elif node_to_delete.right:
+            parent.right = node_to_delete.right
+            return node_to_delete
 
     def _lookup(self, data, current_node):
         if not current_node:
@@ -105,6 +111,14 @@ class BinarySearchTreeTest(unittest.TestCase):
     def testDelete_NoChildren(self):
         self.assertIsNotNone(self.tree.delete(9))
         self.assertEqual(self.tree.traverse(), '1 2 4 5 6 8')
+
+    def testDelete_LeftChild(self):
+        self.assertIsNotNone(self.tree.delete(2))
+        self.assertEqual(self.tree.traverse(), '1 4 5 6 8 9')
+
+    def testDelete_RightChild(self):
+        self.assertIsNotNone(self.tree.delete(8))
+        self.assertEqual(self.tree.traverse(), '1 2 4 5 6 9')
 
 
 # Try Robin's suggestion:
