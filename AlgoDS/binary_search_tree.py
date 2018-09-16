@@ -37,6 +37,16 @@ class BinarySearchTree:
     def insert(self, new_node):
         self._insert(new_node, self.root)
 
+    def max(self, current_node=None):
+        if current_node:
+            return self._max(current_node)
+        return self._max(self.root)
+
+    def min(self, current_node=None):
+        if current_node:
+            return self._min(current_node)
+        return self._min(self.root)
+
     def delete(self, data):
         node_to_delete = self.lookup(data)
         parent = node_to_delete.parent
@@ -77,6 +87,20 @@ class BinarySearchTree:
         self._inorder_traversal(current_node.left, get_data)
         self._traversal.append(get_data(current_node))
         self._inorder_traversal(current_node.right, get_data)
+
+    def _max(self, current_node):
+        if not current_node:
+            return None
+        if not current_node.right:
+            return current_node
+        return self._max(current_node.right)
+
+    def _min(self, current_node):
+        if not current_node:
+            return None
+        if not current_node.left:
+            return current_node
+        return self._min(current_node.left)
 
 
 class BinarySearchTreeTest(unittest.TestCase):
@@ -120,6 +144,20 @@ class BinarySearchTreeTest(unittest.TestCase):
         self.assertIsNotNone(self.tree.delete(8))
         self.assertEqual(self.tree.traverse(), '1 2 4 5 6 9')
 
+    def testMax_None(self):
+        self.tree = BinarySearchTree()
+        self.assertIsNone(self.tree.max())
+
+    def testMax_WithData(self):
+        self.assertEqual(self.tree.max().data, 9)
+
+    def testMin_None(self):
+        self.tree = BinarySearchTree()
+        self.assertIsNone(self.tree.min())
+
+    def testMin_WithData(self):
+        self.assertEqual(self.tree.min().data, 1)
+
 
 # Try Robin's suggestion:
 # "if you want to naturally extend it you could then go on to create a
@@ -131,6 +169,7 @@ class BinarySearchTreeTest(unittest.TestCase):
 # This means fewer cases to think about"
 
 # Try creating a balance BST from a sorted list
+
 
 if __name__ == '__main__':
     unittest.main()
