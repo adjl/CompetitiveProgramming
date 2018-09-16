@@ -37,6 +37,16 @@ class BinarySearchTree:
     def insert(self, new_node):
         self._insert(new_node, self.root)
 
+    def delete(self, data):
+        node_to_delete = self.lookup(data)
+        parent = node_to_delete.parent
+        if not node_to_delete.left and not node_to_delete.right:
+            if parent.left is node_to_delete:
+                parent.left = None
+            else:
+                parent.right = None
+            return node_to_delete
+
     def _lookup(self, data, current_node):
         if not current_node:
             return None
@@ -92,6 +102,10 @@ class BinarySearchTreeTest(unittest.TestCase):
     def testLookup_WithoutData(self):
         self.assertIsNone(self.tree.lookup(3))
 
+    def testDelete_NoChildren(self):
+        self.assertIsNotNone(self.tree.delete(9))
+        self.assertEqual(self.tree.traverse(), '1 2 4 5 6 8')
+
 
 # Try Robin's suggestion:
 # "if you want to naturally extend it you could then go on to create a
@@ -103,7 +117,6 @@ class BinarySearchTreeTest(unittest.TestCase):
 # This means fewer cases to think about"
 
 # Try creating a balance BST from a sorted list
-
 
 if __name__ == '__main__':
     unittest.main()
