@@ -191,12 +191,19 @@ class BinarySearchTreeTest(unittest.TestCase):
 # delete the node it ends up in
 # This means fewer cases to think about"
 
-# Try creating a balance BST from a sorted list
+# def reassign_child(self, old_child, new_child):
+#   if self.right_child is old_child:
+#     self.right_child = new_child
+#   elif self.left_child is old_child:
+#     self.left_child = new_child
+#   else:
+#     throw FaultyAssumptionException()
 
-# Questions:
-# 1) _init() has complexity of O(log n). Is it advisable?
-# 2) Or set parent pointers/rank/etc. on the fly upon insertions, deletions,
-#       node shuffling?
+# TODO:
+# 1) Do not return nodes for insert() and delete()
+# 2) _init() and on the fly node parent/rank initialisation
+# 3) Redo delete()
+# 4) Time complexity review
 
 
 if __name__ == '__main__':
