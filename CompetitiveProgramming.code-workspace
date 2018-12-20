@@ -3,7 +3,6 @@
 		"path": "."
 	}],
 	"settings": {
-		"terminal.integrated.cwd": ".",
-		"python.pythonPath": "/home/adjl/anaconda3/bin/python3"
+		"terminal.integrated.cwd": "."
 	}
 }
